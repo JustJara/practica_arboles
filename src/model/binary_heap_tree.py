@@ -7,6 +7,17 @@ sys.path.append('src')
 from model.patient import Patient
 from model.priority_queue import PriorityQueue
 
+class BinaryTreeNode:
+
+    def __init__(self, data) -> None:
+        self.data = data
+        self.leftchild = None
+        self.rightchild = None
+
+    def __str__(self, level=0):
+
+        return str(self.data)
+
 class BinaryHeap:
     '''
     This class represents a binary heap tree to store patients by triage emergency level
@@ -25,14 +36,23 @@ class BinaryHeap:
     -------------------------------------------------------------------------------
     '''
 
-    def __init__(self,data: Patient) -> None:
+    def __init__(self,root_node: BinaryTreeNode) -> None:
         
-        self.data : Patient = data
-        self.leftchild = None
-        self.rightchild = None
+        self.root_node : BinaryTreeNode = root_node
 
+    
+    def __str__(self, level=0):
+        ret = '  '*level + str(self.data) + '\n'
 
-    def patient_insertion(self, patient: Patient):
+        if self.leftchild:
+            ret += self.leftchild.__str__(level + 1)
+
+        if self.rightchild:
+            ret += self.rightchild.__str__(level + 1)
+
+        return ret
+
+    def patient_insertion(self, root_node: BinaryTreeNode):
 
         """
         Registrar (insertar) un paciente, debe ser posible agregar nuevos pacientes, el
@@ -53,15 +73,27 @@ class BinaryHeap:
 
         """
 
-        root_node = self    
         if not root_node:
-            root_node = patient
+            root_node = 
             return True
         else:
             custom_priority_queue = PriorityQueue()
-            custom_priority_queue.insert(root_node)
+            custom_priority_queue.enqueue(root_node)
 
             while not(custom_priority_queue.is_empty()):
+                temporal_root_node = custom_priority_queue.dequeue()
+
+                if temporal_root_node.leftchild is None:
+                    temporal_root_node.leftchild = patient
+                    return True
+
+                custom_priority_queue.enqueue(temporal_root_node.leftchild)
+
+                if temporal_root_node.rightchild is None:
+                    temporal_root_node.rightchild = patient
+                    return True
+
+                custom_priority_queue.enqueue(temporal_root_node.rightchild)
                 
         
 
@@ -99,7 +131,7 @@ class BinaryHeap:
 
         pass
 
-    def show_patients(self):
+    def show_patients(self, node,prefix="", is_left=True):
         """
         Consultar los pacientes que están en espera en general
 
@@ -107,7 +139,17 @@ class BinaryHeap:
 
         """
 
-        pass
+        if not node:
+            return
+        
+        if node.rightchild:
+            self.show_patients(node.rightchild, prefix + ("│   " if is_left else "    "), False)
+
+        print(prefix + ("└── " if is_left else "┌── ") + str(node.data))
+
+        if node.leftchild:
+            self.show_patients(node.leftchild, prefix + ("    " if is_left else "│   "), True)
+        
 
     def show_patients_by_triage(self):
         """
@@ -144,3 +186,9 @@ class BinaryHeap:
 
 
 
+bt = BinaryHeap(Patient('male','Juan',1,5))
+bt.patient_insertion(Patient('male','Pedro',2,1))
+bt.patient_insertion(Patient('female','Maria',3,2))
+bt.patient_insertion(Patient('female','Maria',3,1))
+bt.patient_insertion(Patient('female','Maria',3,3))
+bt.show_patients(bt)

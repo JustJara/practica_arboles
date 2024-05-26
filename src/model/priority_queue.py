@@ -19,22 +19,22 @@ class PriorityQueue:
     def is_empty(self):
         return len(self.list) == 0
 
-    def insert(self, patient):
-        self.list.append(patient)
+    def enqueue(self, node):
+        self.list.append(node)
 
-    def remove_max_priority_patient(self, patient):
+    def dequeue(self):
 
         if self.is_empty():
             return 'The queue is empty'
 
         else:
 
-            max_priority = self.list[0].triage
+            max_priority = self.list[0]
 
             for item in self.list[1:]:
 
-                if item.triage < max_priority:
-                    max_priority = item.triage
+                if item.value.triage < max_priority.value.triage:
+                    max_priority = item
 
             self.list.remove(max_priority)
             return max_priority
@@ -43,11 +43,11 @@ class PriorityQueue:
         if self.is_empty():
             return 'The queue is empty'
         else:
-            max_priority = self.list[0].triage
+            max_priority = self.list[0].data.triage
 
             for item in self.list[1:]:
-                if item.triage < max_priority:
-                    max_priority = item.triage
+                if item.data.triage < max_priority:
+                    max_priority = item.data.triage
 
             return max_priority
     
