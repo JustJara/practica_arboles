@@ -18,7 +18,7 @@ class Patient:
         self.triage = triage
 
     def __str__(self):
-        return f'#{self.id}: {self.nombre} P({self.triage})'
+        return f'ID:{self.id} Nombre:{self.nombre} Triaje:({self.triage})'
     
     def __repr__(self) -> str:
         return self.__str__()

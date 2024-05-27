@@ -106,7 +106,7 @@ class MinHeap:
 
     def next_patient_to_attend(self):
         '''
-        Este método retorna el siguiente paciente a atender en el hospital
+        Este método retorna el siguiente paciente a atender en el hospital sin eliminarlo del heap
         '''
         if self.data is None:
             return 'No hay pacientes en espera'
@@ -114,7 +114,7 @@ class MinHeap:
 
     def attend_next_patient(self):
         '''
-        Este método atiende al siguiente paciente en el hospital
+        Este método atiende al siguiente paciente en el hospital, removiendolo del árbol y manteniendo la propiedad del heap mínimo
         '''
 
         if self.data is None:
@@ -208,7 +208,7 @@ class MinHeap:
                 self.rightchild.show_general_tree_waiting_room(prefix + ("    " if is_left else "│   "), True)
 
 
-    def show_general_waiting_room(self) -> list[Patient]:
+    def get_general_waiting_room(self) -> list[Patient]:
         '''
         Este método muestra los pacientes en espera en el hospital en forma de lista
 
@@ -235,7 +235,7 @@ class MinHeap:
             
 
 
-    def show_patients_by_triage(self, triage: int):
+    def get_patients_by_triage(self, triage: int):
         '''
         Este método muestra los pacientes en espera en el hospital por triaje
         
@@ -246,10 +246,17 @@ class MinHeap:
 
         Retorna
         -------
-        list[Patient]
+        waiting_room_by_triage: list[Patient]
             Lista de pacientes en espera en el hospital filtrados por triaje
         '''
-        return [patient for patient in self.show_general_waiting_room() if patient.triage == triage]
+        patients = self.get_general_waiting_room()
+        waiting_room_by_triage = []
+        for patient in patients:
+            if patient.triage == triage:
+                waiting_room_by_triage.append(patient)
+
+        return waiting_room_by_triage
+
     
     def remove_patient(self, patient_ind:int):
         '''
@@ -289,35 +296,4 @@ class MinHeap:
             return True
         return False
 
-
-
-
-
-heap = MinHeap()
-
-heap.insert(Patient('M', 'Pedro',67,4))
-heap.insert(Patient('F', 'Teresa', 45, 2))
-heap.insert(Patient('M', 'Julio', 75, 1))
-heap.insert(Patient('F', 'Sofía', 15, 4))
-
-
-
-
-# Consultar pacientes que están en espera
-print("\nPacientes en espera:")
-heap.show_general_tree_waiting_room()
-print('\n ------------------- \n')
-print(heap.next_patient_to_attend())
-print('Atendiendo paciente...')
-#heap.attend_next_patient()
-print('Espera actual:')
-heap.show_general_tree_waiting_room()
-waiting_room = heap.show_general_waiting_room()
-print(f'Lista de espera: {waiting_room}')
-print(f'Pacientes con triaje 4: {heap.show_patients_by_triage(4)}')
-
-print('\n ------------------- \n')
-print(f'Eliminar paciente con id 2 {heap.remove_patient(3)}')
-
-heap.show_general_tree_waiting_room()
 
