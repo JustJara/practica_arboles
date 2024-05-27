@@ -125,6 +125,7 @@ class MinHeap:
         if not self.leftchild and not self.rightchild:
             self.data = None
             return min_data
+        
         self.data = self.remove_last_node()
         self.heapify_down(self)
         return min_data
@@ -258,7 +259,7 @@ class MinHeap:
         return waiting_room_by_triage
 
     
-    def remove_patient(self, patient_ind:int):
+    def remove_patient(self, patient_id:int):
         '''
         Eset método elimina un paciente con id específica en espera en el hospital manteniendo el heap mínimo
 
@@ -270,6 +271,12 @@ class MinHeap:
 
         if self.data is None:
             return False
+        
+        if not self.leftchild and not self.rightchild:
+            if self.data.id == patient_id:
+                self.data = None
+                return True
+            return False
         auxiliar_queue = Queue()
         auxiliar_queue.enqueue(self)
 
@@ -277,7 +284,7 @@ class MinHeap:
         while not auxiliar_queue.is_empty():
             current_node = auxiliar_queue.dequeue()
             #Si encuentra el nodo con el ID especificado, se guarda en target
-            if current_node.data.id == patient_ind:
+            if current_node.data.id == patient_id:
                 target = current_node
                 break
             #Si no es el nodo buscado, se agregan los hijos del nodo actual tanto a la izquierda como derecha a la cola auxiliar

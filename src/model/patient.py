@@ -13,12 +13,12 @@ class Patient:
         self.id = Patient.id_counter
         Patient.id_counter += 1
         self.gender = gender
-        self.nombre = name
+        self.name = name
         self.age = age
         self.triage = triage
 
     def __str__(self):
-        return f'ID:{self.id} Nombre:{self.nombre} Triaje:({self.triage})'
+        return f'ID:{self.id} Nombre:{self.name} Triaje:({self.triage})'
     
     def __repr__(self) -> str:
         return self.__str__()

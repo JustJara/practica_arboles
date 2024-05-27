@@ -42,14 +42,17 @@ class ConsoleUI:
     def show_next_patient(self):
         patient = self.hospital.next_patient_to_attend()
         if patient:
-            print(f'El próximo paciente a atender es: {patient.name}')
+            if type(patient) == str:
+                print(patient)
+            else: 
+                print(f'El próximo paciente a atender es: {patient.name}')
         else:
             print('No hay pacientes en espera')
 
     def attend_patient(self):
         patient = self.hospital.next_patient_to_attend()
         if patient:
-            print(f'Atendiendo a {patient}')
+            print(f'Atendiendo a {patient.name} con triaje {patient.triage}')
             self.hospital.attend_next_patient()
         else:
             print('No hay pacientes en espera')
