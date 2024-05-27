@@ -5,18 +5,7 @@ import sys
 sys.path.append('src')
 
 from model.patient import Patient
-from model.priority_queue import PriorityQueue
-
-class BinaryTreeNode:
-
-    def __init__(self, data) -> None:
-        self.data = data
-        self.leftchild = None
-        self.rightchild = None
-
-    def __str__(self, level=0):
-
-        return str(self.data)
+from model.queue import Queue
 
 class BinaryHeap:
     '''
@@ -36,9 +25,11 @@ class BinaryHeap:
     -------------------------------------------------------------------------------
     '''
 
-    def __init__(self,root_node: BinaryTreeNode) -> None:
+    def __init__(self,data) -> None:
         
-        self.root_node : BinaryTreeNode = root_node
+        self.data = data
+        self.leftchild = None
+        self.rightchild = None
 
     
     def __str__(self, level=0):
@@ -52,7 +43,7 @@ class BinaryHeap:
 
         return ret
 
-    def patient_insertion(self, root_node: BinaryTreeNode):
+    def patient_insertion(self, data):
 
         """
         Registrar (insertar) un paciente, debe ser posible agregar nuevos pacientes, el
@@ -72,31 +63,64 @@ class BinaryHeap:
                 True if the patient was inserted successfully, False otherwise
 
         """
+        new_node = BinaryHeap(data)
+        queue = [self]
 
-        if not root_node:
-            root_node = 
-            return True
-        else:
-            custom_priority_queue = PriorityQueue()
-            custom_priority_queue.enqueue(root_node)
+        while queue:
+            current = queue.pop(0)
 
-            while not(custom_priority_queue.is_empty()):
-                temporal_root_node = custom_priority_queue.dequeue()
+            if not current.leftchild:
+                current.leftchild = new_node
+                self.heapify(current.leftchild)
+                return
+            else:
+                queue.append(current.leftchild)
+            
+            if not current.rightchild:
+                current.rightchild = new_node
+                self.heapify(current.rightchild)
+                return
+            else:
+                queue.append(current.rightchild)
 
-                if temporal_root_node.leftchild is None:
-                    temporal_root_node.leftchild = patient
-                    return True
+    def get_parent(self, node):
+        """
+        Este método se encarga de encontrar el nodo padre de un nodo dado
+        """
+        list = [self]
+        parent = None
 
-                custom_priority_queue.enqueue(temporal_root_node.leftchild)
+        while list:
+            current = list.pop(0)
+            if current.leftchild == node or current.rightchild == node:
+                return current
+            if current.leftchild:
+                list.append(current.leftchild)
+            if current.rightchild:
+                list.append(current.rightchild)
 
-                if temporal_root_node.rightchild is None:
-                    temporal_root_node.rightchild = patient
-                    return True
+        return parent
+    def heapify(self, node):
+        """
+        Este método se encarga de mantener la propiedad de heap en el árbol binario
+        """
+        current = node
+        while current != self:
+            parent = self.get_parent(current)
+            if parent and parent.data.triage >= current.data.triage:
+                parent.data, current.data = current.data, parent.data
+                current = parent
+            else:
+                break
 
-                custom_priority_queue.enqueue(temporal_root_node.rightchild)
-                
-        
 
+
+    def swap(self, root):
+        """
+        Este método se encarga de intercambiar dos nodos en el árbol binario
+        """
+        pass
+    
     def check_next_patient(self):
         """
 
@@ -186,9 +210,14 @@ class BinaryHeap:
 
 
 
-bt = BinaryHeap(Patient('male','Juan',1,5))
-bt.patient_insertion(Patient('male','Pedro',2,1))
-bt.patient_insertion(Patient('female','Maria',3,2))
-bt.patient_insertion(Patient('female','Maria',3,1))
-bt.patient_insertion(Patient('female','Maria',3,3))
+bt = BinaryHeap(Patient('male','3',1,3))
+bt.patient_insertion(Patient('male','3',2,3))
+bt.patient_insertion(Patient('female','2',3,2))
+bt.patient_insertion(Patient('female','1',3,1))
+bt.patient_insertion(Patient('female','1',3,1))
+bt.patient_insertion(Patient('female','2',3,2))
+bt.patient_insertion(Patient('female','2',3,2))
+bt.patient_insertion(Patient('female','1',3,1))
+
+print('After heapify')
 bt.show_patients(bt)

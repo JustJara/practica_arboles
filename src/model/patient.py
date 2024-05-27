@@ -16,7 +16,7 @@ class Patient:
         self.triage : int = triage
 
     def __str__(self) -> str:
-        return self.name
+        return (f'{self.name}|{self.triage}')
 
 
 

@@ -2,7 +2,7 @@ import sys
 
 sys.path.append('src')
 
-from model.priority_queue import PriorityQueue
+from model.queue import PriorityQueue
 from model.patient import Patient
 
 class Node:
@@ -39,18 +39,63 @@ class BinaryTree:
             custom_priority_queue.enqueue(node)
 
             while not custom_priority_queue.is_empty():
-                temporal_root_node = custom_priority_queue.dequeue()
 
+                temporal_root_node = custom_priority_queue.dequeue()
+                print('TEMPORAL ROOTNODE',temporal_root_node)
                 if temporal_root_node.left is None:
-                    temporal_root_node.left = Node(value)
-                    return node
+                    if temporal_root_node.value.triage < value.triage:
+                        temporal_root_node.left = Node(value)
+                        return True
+                    else:
+                        print("ANA", value)
+                        temporal_root_node.left = Node(value)
+                        self.reassign_triage(temporal_root_node)
 
                 custom_priority_queue.enqueue(temporal_root_node.left)
 
+
                 if temporal_root_node.right is None:
-                    temporal_root_node.right = Node(value)
-                    return node
-    
+                    if temporal_root_node.value.triage < value.triage:
+                        temporal_root_node.right = Node(value)
+                    else:
+                        self.reassign_triage(temporal_root_node)
+
+                    
+                custom_priority_queue.enqueue(temporal_root_node.right)
+
+    def reassign_triage(self,root_node):
+        if not root_node:
+            return
+        if root_node.left.value.triage < root_node.value.triage:
+            temporal_value = root_node.value
+            root_node.value = root_node.left.value
+            root_node.left.value = temporal_value
+            self.reassign_triage(root_node)
+            
+        return root_node
+        
+
+
+    def check_heap_property(self):
+        if not self.root:
+            return
+        
+        if self.root.left.value.triage > self.root.value.triage:
+            self.check_heap_property(self.root.left)
+            self.check_heap_property(self.root.right)
+        else:
+            return False
+        
+        if self.root.right.value.triage > self.root.value.triage:
+            self.check_heap_property(self.root.left)
+            self.check_heap_property(self.root.right)
+
+        else:
+            return False
+        return True
+      
+        
+        
 
     def search_node(self, root_node, value):
 
@@ -102,5 +147,5 @@ root = Node(Patient('M', 'Juan', 20, 1))
 bt.insert_node(root, Patient('F', 'Maria', 30, 2))
 bt.insert_node(root, Patient('M', 'Pedro', 25, 2))
 bt.insert_node(root, Patient('F', 'Ana', 35, 1))
-
+print(bt.check_heap_property(),'AAAAAAAAAAAAAAAAAAAAAA')
 bt.print_tree(root)
